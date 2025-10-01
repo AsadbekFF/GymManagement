@@ -10,6 +10,7 @@ namespace GymManagement.Entities.Context
         public DbSet<Product> Products { get; set; }
         public DbSet<CheckIn> CheckIns { get; set; }
         public DbSet<Purchase> Purchases { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
 
         // Parameterless constructor for EF Tools (will use OnConfiguring) 
         public GymDbContext() { }
@@ -24,8 +25,7 @@ namespace GymManagement.Entities.Context
                 // This block is used when the context is instantiated without options (e.g., in runtime).
                 string connectionString = ConfigurationManager.ConnectionStrings["GymDbConnection"].ConnectionString;
                 optionsBuilder
-                    .UseSqlite(connectionString)
-                    .UseLazyLoadingProxies(); // Enables lazy loading for virtual properties
+                    .UseSqlite(connectionString);
             }
         }
 
@@ -55,6 +55,11 @@ namespace GymManagement.Entities.Context
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasColumnType("TEXT");
+
+            modelBuilder.Entity<Subscription>()
+                .HasOne(s => s.Customer)
+                .WithMany()
+                .HasForeignKey(s => s.CustomerId);
 
             base.OnModelCreating(modelBuilder);
         }

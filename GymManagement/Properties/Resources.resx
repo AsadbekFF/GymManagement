@@ -120,6 +120,12 @@
   <data name="Action" xml:space="preserve">
     <value>Action</value>
   </data>
+  <data name="AddSubscription" xml:space="preserve">
+    <value>Add New Subscription</value>
+  </data>
+  <data name="AddSubscriptionButton" xml:space="preserve">
+    <value>Add Subscription</value>
+  </data>
   <data name="AppTitle" xml:space="preserve">
     <value>Gym Management System</value>
   </data>
@@ -160,6 +166,9 @@
   <data name="Clear" xml:space="preserve">
     <value>Clear</value>
   </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Clear Filters</value>
+  </data>
   <data name="Customer" xml:space="preserve">
     <value>Customer</value>
   </data>
@@ -189,6 +198,15 @@
   </data>
   <data name="Date" xml:space="preserve">
     <value>Date</value>
+  </data>
+  <data name="FilterByCustomerName" xml:space="preserve">
+    <value>Filter by Customer Name...</value>
+  </data>
+  <data name="FilterByEndDate" xml:space="preserve">
+    <value>End Date</value>
+  </data>
+  <data name="FilterByStartDate" xml:space="preserve">
+    <value>Start Date</value>
   </data>
   <data name="HeaderProductName" xml:space="preserve">
     <value>Product Name</value>
@@ -259,6 +277,36 @@
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="SubscriptionAmount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="SubscriptionAmountHeader" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="SubscriptionCustomerHeader" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="SubscriptionEndDate" xml:space="preserve">
+    <value>End Date</value>
+  </data>
+  <data name="SubscriptionsList" xml:space="preserve">
+    <value>Subscriptions</value>
+  </data>
+  <data name="SubscriptionStartDate" xml:space="preserve">
+    <value>Start Date</value>
+  </data>
+  <data name="SubscriptionType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="SubscriptionTypeHeader" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="SubscriptionType_Daily" xml:space="preserve">
+    <value>Daily</value>
+  </data>
+  <data name="SubscriptionType_Monthly" xml:space="preserve">
+    <value>Monthly</value>
+  </data>
   <data name="TabCustomers" xml:space="preserve">
     <value>Customers</value>
   </data>
@@ -267,6 +315,9 @@
   </data>
   <data name="TabInventory" xml:space="preserve">
     <value>Inventory</value>
+  </data>
+  <data name="TabSubscriptions" xml:space="preserve">
+    <value>Subscriptions</value>
   </data>
   <data name="TabTransactions" xml:space="preserve">
     <value>Transactions</value>

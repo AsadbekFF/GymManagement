@@ -11,6 +11,7 @@ using System.Windows.Input;
 using GymManagement.Models;
 using LiveCharts;
 using LiveCharts.Wpf;
+using GymManagement.Models.Enum;
 
 namespace GymManagement.ViewModels
 {
@@ -24,12 +25,28 @@ namespace GymManagement.ViewModels
         public ObservableCollection<CheckIn> CheckIns { get; set; }
         public ObservableCollection<Purchase> Purchases { get; set; }
 
+        public Array SubscriptionTypes => Enum.GetValues(typeof(SubscriptionType));
+
         // Filtered collections (what the UI actually displays)
         private ObservableCollection<Customer> _filteredCustomers;
         public ObservableCollection<Customer> FilteredCustomers
         {
             get => _filteredCustomers;
             set { _filteredCustomers = value; OnPropertyChanged(nameof(FilteredCustomers)); }
+        }
+
+        private ObservableCollection<Customer> _filteredCheckinCustomers;
+        public ObservableCollection<Customer> FilteredCheckinCustomers
+        {
+            get => _filteredCheckinCustomers;
+            set { _filteredCheckinCustomers = value; OnPropertyChanged(nameof(FilteredCheckinCustomers)); }
+        }
+
+        private ObservableCollection<Customer> _filteredPurchaseCustomers;
+        public ObservableCollection<Customer> FilteredPurchaseCustomers
+        {
+            get => _filteredPurchaseCustomers;
+            set { _filteredPurchaseCustomers = value; OnPropertyChanged(nameof(FilteredPurchaseCustomers)); }
         }
 
         private ObservableCollection<Product> _filteredProducts;
@@ -39,11 +56,32 @@ namespace GymManagement.ViewModels
             set { _filteredProducts = value; OnPropertyChanged(nameof(FilteredProducts)); }
         }
 
+        private ObservableCollection<Product> _filteredPurchaseProducts;
+        public ObservableCollection<Product> FilteredPurchaseProducts
+        {
+            get => _filteredPurchaseProducts;
+            set { _filteredPurchaseProducts = value; OnPropertyChanged(nameof(FilteredPurchaseProducts)); }
+        }
+
         private ObservableCollection<Purchase> _filteredPurchases;
         public ObservableCollection<Purchase> FilteredPurchases
         {
             get => _filteredPurchases;
             set { _filteredPurchases = value; OnPropertyChanged(nameof(FilteredPurchases)); }
+        }
+
+        private ObservableCollection<Subscription> _subscriptions;
+        public ObservableCollection<Subscription> Subscriptions
+        {
+            get => _subscriptions;
+            set { _subscriptions = value; OnPropertyChanged(nameof(Subscriptions)); }
+        }
+
+        private ObservableCollection<Subscription> _filteredSubscriptions;
+        public ObservableCollection<Subscription> FilteredSubscriptions
+        {
+            get => _filteredSubscriptions;
+            set { _filteredSubscriptions = value; OnPropertyChanged(nameof(FilteredSubscriptions)); }
         }
 
         // --- New/Selected Entities (Input Forms) ---
@@ -85,6 +123,44 @@ namespace GymManagement.ViewModels
             set { _purchaseMessage = value; OnPropertyChanged(nameof(PurchaseMessage)); }
         }
 
+        public Subscription NewSubscription { get; set; } = new Subscription { StartDate = DateTime.Today, EndDate = DateTime.Today };
+
+        private string _subscriptionCustomerFilterText { get; set; }
+        public string SubscriptionCustomerFilterText 
+        { 
+            get => _subscriptionCustomerFilterText; 
+            set
+            {
+                _subscriptionCustomerFilterText = value;
+                OnPropertyChanged(nameof(SubscriptionCustomerFilterText));
+                FilterSubscriptions();
+            } 
+        }
+
+        private DateTime? _subscriptionStartDateFilter;
+        public DateTime? SubscriptionStartDateFilter 
+        { 
+            get => _subscriptionStartDateFilter; 
+            set
+            {
+                _subscriptionStartDateFilter = value;
+                OnPropertyChanged(nameof(SubscriptionStartDateFilter));
+                FilterSubscriptions();
+            }
+        }
+
+        private DateTime? _subscriptionEndDateFilter;
+        public DateTime? SubscriptionEndDateFilter 
+        {
+            get => _subscriptionEndDateFilter;
+            set
+            {
+                _subscriptionEndDateFilter = value;
+                OnPropertyChanged(nameof(SubscriptionEndDateFilter));
+                FilterSubscriptions();
+            }
+        }
+
         // --- Filtering Properties ---
         private string _customerFilterText;
         public string CustomerFilterText
@@ -95,6 +171,42 @@ namespace GymManagement.ViewModels
                 _customerFilterText = value;
                 OnPropertyChanged(nameof(CustomerFilterText));
                 FilterCustomers();
+            }
+        }
+
+        private string _customerCheckinFilterText;
+        public string CustomerCheckinFilterText
+        {
+            get => _customerCheckinFilterText;
+            set
+            {
+                _customerCheckinFilterText = value;
+                OnPropertyChanged(nameof(CustomerCheckinFilterText));
+                FilterCheckinCustomers();
+            }
+        }
+
+        private string _customerPurchaseFilterText;
+        public string CustomerPurchaseFilterText
+        {
+            get => _customerPurchaseFilterText;
+            set
+            {
+                _customerPurchaseFilterText = value;
+                OnPropertyChanged(nameof(CustomerPurchaseFilterText));
+                FilterPurchaseCustomers();
+            }
+        }
+
+        private string _productPurchaseFilterText;
+        public string ProductPurchaseFilterText
+        {
+            get => _productPurchaseFilterText;
+            set
+            {
+                _productPurchaseFilterText = value;
+                OnPropertyChanged(nameof(ProductPurchaseFilterText));
+                FilterPurchaseProducts();
             }
         }
 
@@ -128,6 +240,9 @@ namespace GymManagement.ViewModels
         public ICommand CheckInCommand { get; }
         public ICommand ProcessPurchaseCommand { get; }
         public ICommand LoadDataCommand { get; }
+        public ICommand ClearCustomersFilterCommand { get;  }
+        public ICommand AddSubscriptionCommand { get; }
+        public ICommand ClearSubscriptionsFilterCommand { get; }
 
 
         // =========================================================================
@@ -144,6 +259,7 @@ namespace GymManagement.ViewModels
             Products = new ObservableCollection<Product>();
             CheckIns = new ObservableCollection<CheckIn>();
             Purchases = new ObservableCollection<Purchase>();
+            Subscriptions = new ObservableCollection<Subscription>();
 
             // Initialize Filtered Collections (to avoid null reference in UI)
             FilteredCustomers = new ObservableCollection<Customer>();
@@ -158,6 +274,9 @@ namespace GymManagement.ViewModels
             CheckInCommand = new RelayCommand(ExecuteCheckIn, CanExecuteCheckIn);
             ProcessPurchaseCommand = new RelayCommand(ExecuteProcessPurchase, CanExecuteProcessPurchase);
             LoadDataCommand = new RelayCommand(ExecuteLoadData);
+            AddSubscriptionCommand = new RelayCommand(ExecuteProcessSubscription, CanExecuteProcessSubscription);
+            ClearCustomersFilterCommand = new RelayCommand(ClearCustomersFilterText);
+            ClearSubscriptionsFilterCommand = new RelayCommand(ClearSubscriptionsFilter);
 
             // Initial Data Load (must be deferred to the View's Loaded event in XAML 
             // if we were running a migration/init command here, but since the migration 
@@ -193,6 +312,11 @@ namespace GymManagement.ViewModels
                 FilterCustomers();
                 FilterProducts();
                 FilterPurchases();
+                FilterPurchaseCustomers();
+                FilterPurchaseProducts();
+                FilterCheckinCustomers();
+
+                LoadSubscriptionData();
 
                 // Load Chart Data
                 LoadChartData();
@@ -204,6 +328,11 @@ namespace GymManagement.ViewModels
                 PurchaseMessage = $"Error loading data: {ex.Message}";
                 Console.WriteLine($"Error loading data: {ex.Message}");
             }
+        }
+
+        private void ClearCustomersFilterText(object obj)
+        {
+            CustomerFilterText = "";
         }
 
         // FIXED: This method now correctly populates the LiveCharts-specific properties.
@@ -269,21 +398,6 @@ namespace GymManagement.ViewModels
             }
         }
 
-        private void FilterCustomers()
-        {
-            if (string.IsNullOrWhiteSpace(CustomerFilterText))
-            {
-                FilteredCustomers = new ObservableCollection<Customer>(Customers);
-            }
-            else
-            {
-                var query = Customers
-                    .Where(c => c.Name.Contains(CustomerFilterText, StringComparison.OrdinalIgnoreCase) ||
-                                c.Phone.Contains(CustomerFilterText, StringComparison.OrdinalIgnoreCase));
-                FilteredCustomers = new ObservableCollection<Customer>(query);
-            }
-        }
-
         // =========================================================================
         // PRODUCT MANAGEMENT
         // =========================================================================
@@ -314,10 +428,148 @@ namespace GymManagement.ViewModels
             }
         }
 
+        private string _productFilterText;
+        public string ProductFilterText
+        {
+            get => _productFilterText;
+            set
+            {
+                _productFilterText = value;
+                OnPropertyChanged(nameof(ProductFilterText));
+                FilterProducts();
+            }
+        }
+
+        // Subscription management
+        private bool CanExecuteProcessSubscription(object obj)
+        {
+            return NewSubscription?.Customer != null &&
+                   NewSubscription?.Type != null &&
+                   NewSubscription?.Amount > 0;
+        }
+
+        private void ExecuteProcessSubscription(object obj)
+        {
+            if (!CanExecuteProcessSubscription(null))
+            {
+                PurchaseMessage = "Select customer, type, and amount > 0.";
+                return;
+            }
+
+            // Attempt purchase which updates inventory in the DB
+            bool success = _dbService.ProcessSubscription(
+                NewSubscription.Customer.Id,
+                NewSubscription.Type,
+                NewSubscription.Amount);
+
+            if (success)
+            {
+                // Refresh data from DB to reflect stock change and new purchase record
+                PurchaseMessage = $"Successfull.";
+                ExecuteLoadData(null);
+                LoadChartData(); // Update sales chart
+            }
+            else
+            {
+                PurchaseMessage = $"Something went wrong.";
+            }
+        }
+
+        private void LoadSubscriptionData()
+        {
+            Subscriptions.Clear();
+            _dbService.GetSubscriptions().ForEach(s => Subscriptions.Add(s));
+            FilterSubscriptions(); // Apply initial filter (or no filter)
+        }
+
+        private void ClearSubscriptionsFilter(object obj)
+        {
+            // Reset the filter properties, which will trigger a new filter automatically
+            SubscriptionCustomerFilterText = "";
+            SubscriptionStartDateFilter = null;
+            SubscriptionEndDateFilter = null;
+        }
+
+        private void FilterSubscriptions()
+        {
+            var filteredList = _dbService.FilterSubscriptions(
+                SubscriptionCustomerFilterText,
+                SubscriptionStartDateFilter,
+                SubscriptionEndDateFilter
+            );
+            FilteredSubscriptions = new ObservableCollection<Subscription>(filteredList);
+        }
+
+        // ... inside the MainViewModel class ...
+
         private void FilterProducts()
         {
-            // Simple filter for low/out of stock items
-            FilteredProducts = new ObservableCollection<Product>(Products.OrderBy(p => p.StockQuantity));
+            if (string.IsNullOrWhiteSpace(ProductFilterText))
+            {
+                FilteredProducts = new ObservableCollection<Product>(Products.OrderBy(p => p.StockQuantity));
+            }
+            else
+            {
+                var query = Products.Where(p => p.Name.Contains(ProductFilterText, StringComparison.OrdinalIgnoreCase));
+                FilteredProducts = new ObservableCollection<Product>(query);
+            }
+        }
+
+        private void FilterCustomers()
+        {
+            if (string.IsNullOrWhiteSpace(CustomerFilterText))
+            {
+                FilteredCustomers = new ObservableCollection<Customer>(Customers);
+            }
+            else
+            {
+                var query = Customers
+                    .Where(c => c.Name.Contains(CustomerFilterText, StringComparison.OrdinalIgnoreCase) ||
+                                (!string.IsNullOrWhiteSpace(c.Phone) && c.Phone.Contains(CustomerFilterText, StringComparison.OrdinalIgnoreCase)));
+                FilteredCustomers = new ObservableCollection<Customer>(query);
+            }
+        }
+
+        private void FilterCheckinCustomers()
+        {
+            if (string.IsNullOrWhiteSpace(CustomerCheckinFilterText))
+            {
+                FilteredCheckinCustomers = new ObservableCollection<Customer>(Customers);
+            }
+            else
+            {
+                var query = Customers
+                    .Where(c => c.Name.Contains(CustomerCheckinFilterText, StringComparison.OrdinalIgnoreCase));
+                FilteredCheckinCustomers = new ObservableCollection<Customer>(query);
+            }
+        }
+
+        private void FilterPurchaseCustomers()
+        {
+            if (string.IsNullOrWhiteSpace(CustomerPurchaseFilterText))
+            {
+                FilteredPurchaseCustomers = new ObservableCollection<Customer>(Customers);
+            }
+            else
+            {
+                var query = Customers
+                    .Where(c => c.Name.Contains(CustomerPurchaseFilterText, StringComparison.OrdinalIgnoreCase));
+                FilteredPurchaseCustomers = new ObservableCollection<Customer>(query);
+            }
+        }
+
+        private void FilterPurchaseProducts()
+        {
+            if (string.IsNullOrWhiteSpace(ProductPurchaseFilterText))
+            {
+                FilteredPurchaseProducts = new ObservableCollection<Product>(Products);
+            }
+            else
+            {
+                var query = Products
+                    .Where(c => c.Name.Contains(ProductPurchaseFilterText, StringComparison.OrdinalIgnoreCase));
+                FilteredPurchaseProducts = new ObservableCollection<Product>(query);
+            }
         }
 
         // =========================================================================

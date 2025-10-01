@@ -120,6 +120,12 @@
   <data name="Action" xml:space="preserve">
     <value>Действие</value>
   </data>
+  <data name="AddSubscription" xml:space="preserve">
+    <value>Добавить новую подписку</value>
+  </data>
+  <data name="AddSubscriptionButton" xml:space="preserve">
+    <value>Добавить подписку</value>
+  </data>
   <data name="AppTitle" xml:space="preserve">
     <value>Система управления спортзалом</value>
   </data>
@@ -159,6 +165,9 @@
   <data name="Clear" xml:space="preserve">
     <value>Очистить</value>
   </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Очистить фильтры</value>
+  </data>
   <data name="Customer" xml:space="preserve">
     <value>Клиент</value>
   </data>
@@ -188,6 +197,15 @@
   </data>
   <data name="Date" xml:space="preserve">
     <value>Дата</value>
+  </data>
+  <data name="FilterByCustomerName" xml:space="preserve">
+    <value>Фильтр по имени клиента...</value>
+  </data>
+  <data name="FilterByEndDate" xml:space="preserve">
+    <value>Дата окончания</value>
+  </data>
+  <data name="FilterByStartDate" xml:space="preserve">
+    <value>Дата начала</value>
   </data>
   <data name="HeaderProductName" xml:space="preserve">
     <value>Название продукта</value>
@@ -258,6 +276,36 @@
   <data name="Save" xml:space="preserve">
     <value>Сохранить</value>
   </data>
+  <data name="SubscriptionAmount" xml:space="preserve">
+    <value>Сумма</value>
+  </data>
+  <data name="SubscriptionAmountHeader" xml:space="preserve">
+    <value>Сумма</value>
+  </data>
+  <data name="SubscriptionCustomerHeader" xml:space="preserve">
+    <value>Клиент</value>
+  </data>
+  <data name="SubscriptionEndDate" xml:space="preserve">
+    <value>Дата окончания</value>
+  </data>
+  <data name="SubscriptionsList" xml:space="preserve">
+    <value>Подписки</value>
+  </data>
+  <data name="SubscriptionStartDate" xml:space="preserve">
+    <value>Дата начала</value>
+  </data>
+  <data name="SubscriptionType" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="SubscriptionTypeHeader" xml:space="preserve">
+    <value>Turi</value>
+  </data>
+  <data name="SubscriptionType_Daily" xml:space="preserve">
+    <value>Ежедневный</value>
+  </data>
+  <data name="SubscriptionType_Monthly" xml:space="preserve">
+    <value>Месячный</value>
+  </data>
   <data name="TabCustomers" xml:space="preserve">
     <value>Клиенты</value>
   </data>
@@ -266,6 +314,9 @@
   </data>
   <data name="TabInventory" xml:space="preserve">
     <value>Склад</value>
+  </data>
+  <data name="TabSubscriptions" xml:space="preserve">
+    <value>Подписки</value>
   </data>
   <data name="TabTransactions" xml:space="preserve">
     <value>Транзакции</value>

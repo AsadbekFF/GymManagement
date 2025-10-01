@@ -120,6 +120,12 @@
   <data name="Action" xml:space="preserve">
     <value>Harakat</value>
   </data>
+  <data name="AddSubscription" xml:space="preserve">
+    <value>Yangi obuna qo'shish</value>
+  </data>
+  <data name="AddSubscriptionButton" xml:space="preserve">
+    <value>Obuna qo'shish</value>
+  </data>
   <data name="AppTitle" xml:space="preserve">
     <value>Sport zali boshqaruv tizimi</value>
   </data>
@@ -159,6 +165,9 @@
   <data name="Clear" xml:space="preserve">
     <value>Tozalash</value>
   </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Filtrlarni tozalash</value>
+  </data>
   <data name="Customer" xml:space="preserve">
     <value>Mijoz</value>
   </data>
@@ -188,6 +197,15 @@
   </data>
   <data name="Date" xml:space="preserve">
     <value>Sana</value>
+  </data>
+  <data name="FilterByCustomerName" xml:space="preserve">
+    <value>Mijoz nomi bo'yicha filtrlash...</value>
+  </data>
+  <data name="FilterByEndDate" xml:space="preserve">
+    <value>Tugash sanasi</value>
+  </data>
+  <data name="FilterByStartDate" xml:space="preserve">
+    <value>Boshlanish sanasi</value>
   </data>
   <data name="HeaderProductName" xml:space="preserve">
     <value>Mahsulot nomi</value>
@@ -258,6 +276,36 @@
   <data name="Save" xml:space="preserve">
     <value>Saqlash</value>
   </data>
+  <data name="SubscriptionAmount" xml:space="preserve">
+    <value>Miqdori</value>
+  </data>
+  <data name="SubscriptionAmountHeader" xml:space="preserve">
+    <value>Miqdori</value>
+  </data>
+  <data name="SubscriptionCustomerHeader" xml:space="preserve">
+    <value>Mijoz</value>
+  </data>
+  <data name="SubscriptionEndDate" xml:space="preserve">
+    <value>Tugash sanasi</value>
+  </data>
+  <data name="SubscriptionsList" xml:space="preserve">
+    <value>Obunalar</value>
+  </data>
+  <data name="SubscriptionStartDate" xml:space="preserve">
+    <value>Boshlanish sanasi</value>
+  </data>
+  <data name="SubscriptionType" xml:space="preserve">
+    <value>Turi</value>
+  </data>
+  <data name="SubscriptionTypeHeader" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="SubscriptionType_Daily" xml:space="preserve">
+    <value>Kunlik</value>
+  </data>
+  <data name="SubscriptionType_Monthly" xml:space="preserve">
+    <value>Oylik</value>
+  </data>
   <data name="TabCustomers" xml:space="preserve">
     <value>Mijozlar</value>
   </data>
@@ -266,6 +314,9 @@
   </data>
   <data name="TabInventory" xml:space="preserve">
     <value>Ombor</value>
+  </data>
+  <data name="TabSubscriptions" xml:space="preserve">
+    <value>Obunalar</value>
   </data>
   <data name="TabTransactions" xml:space="preserve">
     <value>Tranzaksiyalar</value>

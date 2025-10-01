@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 using GymManagement.Models;
 using System.Configuration;
+using GymManagement.Models.Enum;
 
 namespace GymManagement.Services
 {
@@ -35,9 +36,9 @@ namespace GymManagement.Services
                 if (!context.Customers.Any())
                 {
                     // === 1. Seed Customers (Must be saved first to get IDs) ===
-                    var alice = new Customer { Name = "Alice Johnson", Phone = "555-1001", Email = "alice@gym.com" };
-                    var bob = new Customer { Name = "Bob Smith", Phone = "555-1002", Email = "bob@gym.com" };
-                    var charlie = new Customer { Name = "Charlie Davis", Phone = "555-1003", Email = "charlie@gym.com" };
+                    var alice = new Customer { Name = "Alice Johnson", Phone = "555-1001" };
+                    var bob = new Customer { Name = "Bob Smith", Phone = "555-1002" };
+                    var charlie = new Customer { Name = "Charlie Davis", Phone = "555-1003" };
 
                     context.Customers.AddRange(alice, bob, charlie);
                     context.SaveChanges(); // CRITICAL: Forces ID generation
@@ -118,6 +119,85 @@ namespace GymManagement.Services
             {
                 context.Products.Attach(product).State = EntityState.Modified;
                 context.SaveChanges();
+            }
+        }
+
+        public void AddSubscription(Subscription subscription)
+        {
+            using (var context = CreateContext())
+            {
+                context.Subscriptions.Add(subscription);
+                context.SaveChanges();
+            }
+        }
+
+        public List<Subscription> GetSubscriptions()
+        {
+            using (var context = CreateContext())
+            {
+                return context.Subscriptions
+                              .Include(s => s.Customer)
+                              .OrderByDescending(s => s.StartDate)
+                              .ToList();
+            }
+        }
+
+        /// <summary>
+        /// Filters subscriptions based on customer name and date range overlap.
+        /// </summary>
+        /// <param name="customerName">Text filter for customer name.</param>
+        /// <param name="startDateFilter">If provided, finds subscriptions whose range overlaps or starts after this date.</param>
+        /// <param name="endDateFilter">If provided, finds subscriptions whose range overlaps or ends before this date.</param>
+        public List<Subscription> FilterSubscriptions(string customerName, DateTime? startDateFilter, DateTime? endDateFilter)
+        {
+            using (var context = CreateContext())
+            {
+                var query = context.Subscriptions
+                                   .Include(s => s.Customer)
+                                   .AsQueryable();
+
+                // 2. Filter by Date Range Overlap
+                // We use the overlap logic: A and B overlap if A.Start <= B.End AND A.End >= B.Start
+
+                DateTime effectiveEndDateFilter = endDateFilter ?? DateTime.MaxValue.Date;
+                DateTime effectiveStartDateFilter = startDateFilter ?? DateTime.MinValue.Date;
+
+                // If only StartDate is provided (startDateFilter != null and endDateFilter == null):
+                // We want subscriptions where: Subscription.End >= startDateFilter
+                // AND Subscription.Start <= MaxDate (always true).
+                if (startDateFilter.HasValue && !endDateFilter.HasValue)
+                {
+                    // Find all subscriptions that are active ON or AFTER the specified start date.
+                    query = query.Where(s => s.EndDate >= startDateFilter.Value);
+                }
+
+                // If only EndDate is provided (startDateFilter == null and endDateFilter != null):
+                // We want subscriptions where: Subscription.Start <= endDateFilter
+                // AND Subscription.End >= MinDate (always true).
+                else if (!startDateFilter.HasValue && endDateFilter.HasValue)
+                {
+                    // Find all subscriptions that were active UP TO or BEFORE the specified end date.
+                    // We check if the subscription started before the filter's end date.
+                    query = query.Where(s => s.StartDate <= endDateFilter.Value);
+                }
+
+                // If BOTH dates are provided:
+                // Full overlap check: Subscription.Start <= Filter.End AND Subscription.End >= Filter.Start
+                else if (startDateFilter.HasValue && endDateFilter.HasValue)
+                {
+                    query = query.Where(s => s.StartDate <= endDateFilter.Value && s.EndDate >= startDateFilter.Value);
+                }
+
+                // Ensure the sorting remains correct
+                var queryResult =  query.OrderByDescending(s => s.StartDate).ToList();
+
+                // 1. Filter by Customer Name (text search)
+                if (!string.IsNullOrWhiteSpace(customerName))
+                {
+                    queryResult = queryResult.Where(s => s.Customer.Name.Contains(customerName, StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+
+                return queryResult;
             }
         }
 
@@ -206,6 +286,66 @@ namespace GymManagement.Services
                         PurchaseDate = DateTime.Now
                     };
                     context.Purchases.Add(purchase);
+
+                    context.SaveChanges();
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
+        }
+
+        public bool ProcessSubscription(int customerId, SubscriptionType subscriptionType, decimal amount)
+        {
+            using (var context = CreateContext())
+            {
+                // Use the helper method for transaction safety during runtime sales
+                return ProcessSubscription(context, customerId, subscriptionType, amount);
+            }
+        }
+
+        private bool ProcessSubscription(GymDbContext context, int customerId, SubscriptionType subscriptionType, decimal amount)
+        {
+            using (var transaction = context.Database.BeginTransaction())
+            {
+                try
+                {
+                    DateTime startDate = DateTime.Now;
+                    DateTime endDate = DateTime.Now;
+
+                    var customer = context.Customers.FirstOrDefault(p => p.Id == customerId);
+
+                    if (customer == null)
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+
+                    if (subscriptionType == SubscriptionType.Daily)
+                    {
+                        startDate = DateTime.Now.Date;
+                        endDate = DateTime.Now.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+                    }
+                    else
+                    {
+                        startDate = DateTime.Now.Date;
+                        endDate = DateTime.Now.Date.AddMonths(1).AddHours(23).AddMinutes(59).AddSeconds(59);
+                    }
+
+                    // 2. Record purchase
+                    var subscription = new Subscription
+                    {
+                        CustomerId = customerId,
+                        Type = subscriptionType,
+                        Amount = amount,
+                        StartDate = startDate,
+                        EndDate = endDate
+                    };
+                    context.Subscriptions.Add(subscription);
 
                     context.SaveChanges();
                     transaction.Commit();

@@ -7,6 +7,7 @@
         xmlns:viewmodels="clr-namespace:GymManagement.ViewModels"
         xmlns:services="clr-namespace:GymManagement.Services"
         xmlns:properties="clr-namespace:GymManagement.Properties"
+        xmlns:converters="clr-namespace:GymManagement.Converters"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         Title="{x:Static properties:Resources.AppTitle}" 
@@ -57,6 +58,8 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <converters:EnumToLocalizedTextConverter x:Key="EnumToTextConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -92,6 +95,10 @@
 
             <TabItem Header="{x:Static properties:Resources.TabDashboard}">
                 <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="91*"/>
+                        <ColumnDefinition Width="1065*"/>
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
@@ -99,9 +106,9 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Text="{x:Static properties:Resources.ChartSummary}" 
-                               FontSize="24" FontWeight="Bold" Foreground="#3F51B5" Margin="0,0,0,15"/>
+                               FontSize="24" FontWeight="Bold" Foreground="#3F51B5" Margin="0,0,0,15" Grid.ColumnSpan="2"/>
 
-                    <Grid Grid.Row="1" Margin="0,0,0,20">
+                    <Grid Grid.Row="1" Margin="0,0,0,20" Grid.ColumnSpan="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -135,7 +142,7 @@
                         </Border>
                     </Grid>
 
-                    <Border Grid.Row="2" Margin="10" Padding="15" Background="White" CornerRadius="10">
+                    <Border Grid.Row="2" Margin="10,10,10,10" Padding="15" Background="White" CornerRadius="10" Grid.ColumnSpan="2">
                         <StackPanel>
                             <TextBlock Text="{x:Static properties:Resources.ChartInventoryStatusTitle}" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
                             <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding FilteredProducts}" IsReadOnly="True" MaxHeight="250"
@@ -169,30 +176,36 @@
                     </Grid.ColumnDefinitions>
 
                     <Border Grid.Column="0" Style="{StaticResource CardStyle}">
-                        <StackPanel>
-                            <TextBlock Text="{x:Static properties:Resources.CustomerList}" Style="{StaticResource HeaderStyle}"/>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0">
+                                <TextBlock Text="{x:Static properties:Resources.CustomerList}" Style="{StaticResource HeaderStyle}"/>
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="#BDC3C7">
-                                    <TextBox Text="{Binding CustomerFilterText, UpdateSourceTrigger=PropertyChanged}" 
+                                    <Border CornerRadius="5" BorderThickness="1" BorderBrush="#BDC3C7">
+                                        <TextBox Text="{Binding CustomerFilterText, UpdateSourceTrigger=PropertyChanged}" 
                                                  Height="30" Padding="5" BorderThickness="0"
                                                  services:WatermarkService.Watermark="{x:Static properties:Resources.CustomerSearchHint}"/>
-                                </Border>
+                                    </Border>
 
-                                <Button Grid.Column="1" Content="{x:Static properties:Resources.Clear}" 
-                                              Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0"
-                                              Command="{Binding LoadDataCommand}"/>
-                            </Grid>
+                                    <Button Grid.Column="1" Content="{x:Static properties:Resources.Clear}" 
+                                            Style="{StaticResource PrimaryButtonStyle}" Margin="10,0,0,0"
+                                            Command="{Binding ClearCustomersFilter}"/>
+                                </Grid>
+                            </StackPanel>
 
-                            <DataGrid ItemsSource="{Binding FilteredCustomers}" 
+
+                            <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredCustomers}" 
                                             AutoGenerateColumns="False" 
                                             IsReadOnly="False" 
-                                            Height="400"
+                                            Height="Auto"
                                             CanUserAddRows="False"
                                             HeadersVisibility="Column"
                                             Background="White"
@@ -201,7 +214,6 @@
                                     <DataGridTextColumn Header="ID" Binding="{Binding Id}" IsReadOnly="True" Width="Auto"/>
                                     <DataGridTextColumn Header="{x:Static properties:Resources.CustomerName}" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="2*"/>
                                     <DataGridTextColumn Header="{x:Static properties:Resources.CustomerPhone}" Binding="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
-                                    <DataGridTextColumn Header="{x:Static properties:Resources.CustomerEmail}" Binding="{Binding Email, UpdateSourceTrigger=PropertyChanged}" Width="2*"/>
                                     <DataGridTemplateColumn Width="Auto" Header="{x:Static properties:Resources.Action}">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -214,7 +226,7 @@
                                     </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
-                        </StackPanel>
+                        </Grid>
                     </Border>
 
                     <StackPanel Grid.Column="1" Margin="10,0,0,0">
@@ -233,11 +245,6 @@
                                     <TextBox Text="{Binding NewCustomer.Phone}" Padding="5" BorderThickness="0"/>
                                 </Border>
 
-                                <TextBlock Text="{x:Static properties:Resources.CustomerEmail}"/>
-                                <Border CornerRadius="5" BorderThickness="1" BorderBrush="#BDC3C7" Margin="0,5,0,10">
-                                    <TextBox Text="{Binding NewCustomer.Email}" Padding="5" BorderThickness="0"/>
-                                </Border>
-
                                 <Button Content="{x:Static properties:Resources.CustomerAddButton}" 
                                               Style="{StaticResource PrimaryButtonStyle}" 
                                               Command="{Binding AddCustomerCommand}" Margin="0,10,0,0"/>
@@ -247,8 +254,11 @@
                         <Border Style="{StaticResource CardStyle}" Margin="5,15,5,5">
                             <StackPanel>
                                 <TextBlock Text="{x:Static properties:Resources.CustomerCheckIn}" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
-                                <ComboBox ItemsSource="{Binding Customers}" 
+                                <ComboBox ItemsSource="{Binding FilteredCheckinCustomers}" 
                                                  DisplayMemberPath="Name"
+                                                 IsEditable="True"
+                                                 IsTextSearchEnabled="False"
+                                                 Text="{Binding CustomerCheckinFilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                  SelectedItem="{Binding SelectedCustomerForCheckIn}"
                                                  Height="30" Margin="0,5,0,10"/>
                                 <Button Content="{x:Static properties:Resources.CheckInButton}" 
@@ -268,13 +278,17 @@
                     </Grid.ColumnDefinitions>
 
                     <Border Grid.Column="0" Style="{StaticResource CardStyle}">
-                        <StackPanel>
-                            <TextBlock Text="{x:Static properties:Resources.InventoryList}" Style="{StaticResource HeaderStyle}"/>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="{x:Static properties:Resources.InventoryList}" Style="{StaticResource HeaderStyle}"/>
 
-                            <DataGrid ItemsSource="{Binding FilteredProducts}" 
+                            <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredProducts}" 
                                             AutoGenerateColumns="False" 
                                             IsReadOnly="False" 
-                                            Height="400"
+                                            Height="Auto"
                                             CanUserAddRows="False"
                                             HeadersVisibility="Column"
                                             Background="White"
@@ -282,7 +296,7 @@
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="ID" Binding="{Binding Id}" IsReadOnly="True" Width="Auto"/>
                                     <DataGridTextColumn Header="{x:Static properties:Resources.ProductName}" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="2*"/>
-                                    <DataGridTextColumn Header="{x:Static properties:Resources.ProductPrice}" Binding="{Binding Price, StringFormat=C2, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+                                    <DataGridTextColumn Header="{x:Static properties:Resources.ProductPrice}" Binding="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
                                     <DataGridTextColumn Header="{x:Static properties:Resources.ProductStock}" Binding="{Binding StockQuantity, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
 
                                     <DataGridTemplateColumn Header="{x:Static properties:Resources.ProductStatus}" Width="*">
@@ -308,7 +322,7 @@
                                 </DataGrid.Columns>
                             </DataGrid>
 
-                        </StackPanel>
+                        </Grid>
                     </Border>
 
                     <StackPanel Grid.Column="1" Margin="10,0,0,0">
@@ -352,14 +366,20 @@
                             <TextBlock Text="{x:Static properties:Resources.PurchaseNew}" Style="{StaticResource HeaderStyle}"/>
 
                             <TextBlock Text="{x:Static properties:Resources.PurchaseCustomer}"/>
-                            <ComboBox ItemsSource="{Binding Customers}" 
+                            <ComboBox ItemsSource="{Binding FilteredPurchaseCustomers}" 
                                                  DisplayMemberPath="Name"
+                                                 IsEditable="True"
+                                                 IsTextSearchEnabled="False"
+                                                 Text="{Binding CustomerPurchaseFilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                  SelectedItem="{Binding SelectedCustomerForPurchase}"
                                                  Height="30" Margin="0,5,0,10"/>
 
                             <TextBlock Text="{x:Static properties:Resources.PurchaseProduct}"/>
-                            <ComboBox ItemsSource="{Binding Products}" 
+                            <ComboBox ItemsSource="{Binding FilteredPurchaseProducts}" 
                                                  DisplayMemberPath="Name"
+                                                 IsEditable="True"
+                                                 IsTextSearchEnabled="False"
+                                                 Text="{Binding ProductPurchaseFilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                  SelectedItem="{Binding SelectedProductForPurchase}"
                                                  Height="30" Margin="0,5,0,10"/>
 
@@ -394,7 +414,7 @@
                                         <DataGridTextColumn Header="{x:Static properties:Resources.Customer}" Binding="{Binding CustomerName}" Width="*"/>
                                         <DataGridTextColumn Header="{x:Static properties:Resources.Product}" Binding="{Binding ProductName}" Width="*"/>
                                         <DataGridTextColumn Header="{x:Static properties:Resources.PurchaseQuantityShort}" Binding="{Binding Quantity}" Width="Auto"/>
-                                        <DataGridTextColumn Header="{x:Static properties:Resources.Total}" Binding="{Binding TotalPrice, StringFormat=C2}" Width="Auto"/>
+                                        <DataGridTextColumn Header="{x:Static properties:Resources.Total}" Binding="{Binding TotalPrice}" Width="Auto"/>
                                         <DataGridTextColumn Header="{x:Static properties:Resources.Date}" Binding="{Binding PurchaseDate, StringFormat='dd/MM HH:mm'}" Width="1.5*"/>
                                     </DataGrid.Columns>
                                 </DataGrid>
@@ -418,6 +438,93 @@
                             </StackPanel>
                         </Border>
                     </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="{x:Static properties:Resources.TabSubscriptions}" Height="20" VerticalAlignment="Bottom">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="{x:Static properties:Resources.AddSubscription}" Style="{StaticResource HeaderStyle}"/>
+
+                            <TextBlock Text="{x:Static properties:Resources.Customer}" />
+                            <ComboBox ItemsSource="{Binding Customers}"
+                                      DisplayMemberPath="Name"
+                                      SelectedItem="{Binding NewSubscription.Customer}"
+                                      Height="30" Margin="0,5,0,10"/>
+
+                            <TextBlock Text="{x:Static properties:Resources.SubscriptionType}" />
+                            <ComboBox ItemsSource="{Binding SubscriptionTypes}"
+                                      SelectedItem="{Binding NewSubscription.Type}"
+                                      Height="30" Margin="0,5,0,10"/>
+
+                            <TextBlock Text="{x:Static properties:Resources.SubscriptionAmount}" />
+                            <TextBox Text="{Binding NewSubscription.Amount}"
+                                     Height="30" Margin="0,5,0,10"/>
+
+                            <Button Content="{x:Static properties:Resources.AddSubscriptionButton}"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Command="{Binding AddSubscriptionCommand}"
+                                    Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0">
+                                <TextBlock Text="{x:Static properties:Resources.SubscriptionsList}" Style="{StaticResource HeaderStyle}"/>
+
+                                <Grid Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0" Text="{Binding SubscriptionCustomerFilterText, UpdateSourceTrigger=PropertyChanged}"
+                                             services:WatermarkService.Watermark="{x:Static properties:Resources.FilterByCustomerName}"/>
+
+                                    <DatePicker Grid.Column="1" SelectedDate="{Binding SubscriptionStartDateFilter}"
+                                                services:WatermarkService.Watermark="{x:Static properties:Resources.FilterByStartDate}"/>
+
+                                    <DatePicker Grid.Column="2" SelectedDate="{Binding SubscriptionEndDateFilter}"
+                                                services:WatermarkService.Watermark="{x:Static properties:Resources.FilterByEndDate}"/>
+
+                                    <Button Grid.Column="3" Content="{x:Static properties:Resources.ClearFilters}"
+                                            Style="{StaticResource PrimaryButtonStyle}"
+                                            Command="{Binding ClearSubscriptionsFilterCommand}"/>
+                                </Grid>
+                            </StackPanel>
+
+                            <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredSubscriptions}"
+                                      AutoGenerateColumns="False" IsReadOnly="True"
+                                      HeadersVisibility="Column" Background="White">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="{x:Static properties:Resources.Customer}" Binding="{Binding CustomerName}" Width="*"/>
+                                    <DataGridTemplateColumn Header="{x:Static properties:Resources.SubscriptionType}" Width="*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Type, Converter={StaticResource EnumToTextConverter}}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="{x:Static properties:Resources.SubscriptionAmount}" Binding="{Binding Amount}" Width="*"/>
+                                    <DataGridTextColumn Header="{x:Static properties:Resources.SubscriptionStartDate}" Binding="{Binding StartDate, StringFormat='dd/MM/yyyy HH:mm'}" Width="*"/>
+                                    <DataGridTextColumn Header="{x:Static properties:Resources.SubscriptionEndDate}" Binding="{Binding EndDate, StringFormat='dd/MM/yyyy HH:mm'}" Width="*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Border>
                 </Grid>
             </TabItem>
         </TabControl>

@@ -70,6 +70,24 @@ namespace GymManagement.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add New Subscription.
+        /// </summary>
+        public static string AddSubscription {
+            get {
+                return ResourceManager.GetString("AddSubscription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Subscription.
+        /// </summary>
+        public static string AddSubscriptionButton {
+            get {
+                return ResourceManager.GetString("AddSubscriptionButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Gym Management System.
         /// </summary>
         public static string AppTitle {
@@ -187,6 +205,15 @@ namespace GymManagement.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear Filters.
+        /// </summary>
+        public static string ClearFilters {
+            get {
+                return ResourceManager.GetString("ClearFilters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Customer.
         /// </summary>
         public static string Customer {
@@ -273,6 +300,33 @@ namespace GymManagement.Properties {
         public static string Date {
             get {
                 return ResourceManager.GetString("Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by Customer Name....
+        /// </summary>
+        public static string FilterByCustomerName {
+            get {
+                return ResourceManager.GetString("FilterByCustomerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End Date.
+        /// </summary>
+        public static string FilterByEndDate {
+            get {
+                return ResourceManager.GetString("FilterByEndDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Date.
+        /// </summary>
+        public static string FilterByStartDate {
+            get {
+                return ResourceManager.GetString("FilterByStartDate", resourceCulture);
             }
         }
         
@@ -484,6 +538,96 @@ namespace GymManagement.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount.
+        /// </summary>
+        public static string SubscriptionAmount {
+            get {
+                return ResourceManager.GetString("SubscriptionAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount.
+        /// </summary>
+        public static string SubscriptionAmountHeader {
+            get {
+                return ResourceManager.GetString("SubscriptionAmountHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer.
+        /// </summary>
+        public static string SubscriptionCustomerHeader {
+            get {
+                return ResourceManager.GetString("SubscriptionCustomerHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End Date.
+        /// </summary>
+        public static string SubscriptionEndDate {
+            get {
+                return ResourceManager.GetString("SubscriptionEndDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscriptions.
+        /// </summary>
+        public static string SubscriptionsList {
+            get {
+                return ResourceManager.GetString("SubscriptionsList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Date.
+        /// </summary>
+        public static string SubscriptionStartDate {
+            get {
+                return ResourceManager.GetString("SubscriptionStartDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string SubscriptionType {
+            get {
+                return ResourceManager.GetString("SubscriptionType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Daily.
+        /// </summary>
+        public static string SubscriptionType_Daily {
+            get {
+                return ResourceManager.GetString("SubscriptionType_Daily", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monthly.
+        /// </summary>
+        public static string SubscriptionType_Monthly {
+            get {
+                return ResourceManager.GetString("SubscriptionType_Monthly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string SubscriptionTypeHeader {
+            get {
+                return ResourceManager.GetString("SubscriptionTypeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Customers.
         /// </summary>
         public static string TabCustomers {
@@ -507,6 +651,15 @@ namespace GymManagement.Properties {
         public static string TabInventory {
             get {
                 return ResourceManager.GetString("TabInventory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscriptions.
+        /// </summary>
+        public static string TabSubscriptions {
+            get {
+                return ResourceManager.GetString("TabSubscriptions", resourceCulture);
             }
         }
         

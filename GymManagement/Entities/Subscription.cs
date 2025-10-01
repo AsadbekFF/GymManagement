@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GymManagement.Models.Enum;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,14 +8,16 @@ using System.Threading.Tasks;
 
 namespace GymManagement.Entities
 {
-    public class CheckIn
+    public class Subscription
     {
         public int Id { get; set; }
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }
-        public DateTime CheckInDate { get; set; }
+        public decimal Amount { get; set; }
+        public SubscriptionType Type { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
 
-        // UI Helper property: Ignored by DB
         [NotMapped]
         public string CustomerName => Customer?.Name ?? "N/A";
     }
